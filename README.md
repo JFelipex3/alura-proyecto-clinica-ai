@@ -119,10 +119,10 @@ Streamlit  →  muestra la respuesta y los documentos consultados
 
 ```bash
 # 1. Clonar el repositorio
-git clone https://github.com/<tu-usuario>/pamv-alura.git
-cd pamv-alura
+git clone https://github.com/JFelipex3/alura-proyecto-clinica-ai.git
+cd alura-proyecto-clinica-ai
 
-# 2. Crear entorno virtual
+# 2. Crear entorno virtual con Python 3.14.6
 python -m venv .venv
 source .venv/bin/activate        # Linux / Mac
 .venv\Scripts\activate           # Windows
