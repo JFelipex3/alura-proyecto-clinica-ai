@@ -210,60 +210,68 @@ Acceder en: `http://localhost:8501`
 **Pregunta:** ¿Con cuánta anticipación debo sacar un turno?
 
 **Respuesta del agente:**
-> Se recomienda agendar su cita con al menos 48 horas de anticipación para
-> especialidades de alta demanda como cardiología y traumatología. Para medicina
-> general, puede solicitar turno el mismo día si hay disponibilidad llamando al
-> (32) 2234512 o a través de la app de la clínica.
+>Puedes agendar citas con hasta 3 meses de anticipación. Para especialidades con alta demanda como Cardiología, Ortopedia y Dermatología, recomendamos reservar con al menos 2 semanas de antelación.
 >
-> *Fuente: faq_consultas_turnos.pdf*
+>*Fuente: faq_consultas_turnos.pdf*
 
 ---
 
 **Pregunta:** ¿Qué pasa si necesito cancelar mi cita?
 
 **Respuesta del agente:**
-> Puede cancelar sin costo hasta 24 horas antes de la cita a través de la app,
-> el sitio web o llamando directamente a la clínica. Cancelaciones realizadas con
-> menos de 24 horas de anticipación pueden generar un cargo administrativo según
-> la política de cancelaciones vigente.
+> Hola, gracias por tu consulta.
 >
-> *Fuente: politica_cancelaciones.pdf*
+>Si necesitas cancelar tu cita, debes notificarlo con al menos 4 horas de anticipación. Puedes hacerlo a través de nuestra app móvil en la sección "Mis citas" → "Cancelar", por WhatsApp al +56 9 2234 5634, llamando al (32) 223 4512, o enviando un correo electrónico a citas@clinicabienestar.cl.
+>
+>Si cancelas con 4 o más horas de anticipación, no tendrá ningún costo para ti y la cita quedará liberada.
+>
+>*Fuente: politica_cancelaciones.pdf*
 
 ---
 
 **Pregunta:** ¿Qué debo llevar para un examen de laboratorio?
 
 **Respuesta del agente:**
-> Para exámenes de laboratorio debe presentarse en ayunas de 8 horas
-> (solo se permite el consumo de agua). Traiga su orden médica vigente y llegue
-> 15 minutos antes de la hora asignada para completar el proceso de admisión.
-> Recuerde no realizar actividad física intensa las 24 horas previas al examen.
+> Hola, para un examen de laboratorio, debes tener en cuenta lo siguiente:
 >
-> *Fuente: instrucciones_pre_post_consulta.pdf*
+> - Ayuno: Para hemograma, química sanguínea y glicemia en ayunas, el ayuno es obligatorio de 8 a 12 horas, permitiéndose solo agua sin gas. (Fuente: instrucciones_pre_post_consulta.pdf)
+> - Evitar: 24 horas antes, evita ejercicio intenso, alcohol y medicamentos (a menos que tu médico indique lo contrario). (Fuente: instrucciones_pre_post_consulta.pdf)
+> - Horario: El horario ideal para la toma de muestra de hemograma, química sanguínea y glicemia en ayunas es entre las 6:30 a.m. (Fuente: instrucciones_pre_post_consulta.pdf)
+> - Examen de Orina (Orina Completa): Debes recoger la orina de la primera micción de la mañana, usar el envase estéril entregado por el laboratorio, realizar aseo genital antes de la recolección (descartando el primer chorro), y entregar la muestra en el laboratorio antes de 2 horas de recolectada. (Fuente: instrucciones_pre_post_consulta.pdf)
+> - Coproparasitológico: Debes entregar una muestra de deposiciones frescas (recolectadas en las últimas 2 horas) en el recipiente estéril del laboratorio, sin mezclarla con orina ni papel higiénico. (Fuente: instrucciones_pre_post_consulta.pdf)
+>
+>Te recomiendo confirmar con tu médico o con el laboratorio los detalles específicos para tu examen.
 
 ---
 
-**Pregunta:** ¿La EPS Sura tiene cobertura en la clínica?
+**Pregunta:** ¿Colmena Golden Cross tiene cobertura en la clínica?
 
 **Respuesta del agente:**
-> Sí. La Clínica Bienestar Integral tiene convenio activo con Sura EPS,
-> con cobertura para consulta externa, urgencias, hospitalización y cirugía
-> programada. Le recomendamos verificar su plan específico con su asesor de
-> salud antes de la cita.
+> Sí, Colmena Golden Cross tiene cobertura en la clínica para consulta, urgencias y hospitalización, y su convenio se encuentra activo con convenio pleno.
+>
+> *Fuente: guia_convenios_coberturas.pdf*
+> *Categoría: Convenios y Coberturas*
 >
 > *Fuente: convenios_eps.csv*
+> *Categoría: Convenios y Coberturas*
 
 ---
 
 **Pregunta:** ¿Cómo protegen mis datos personales?
 
 **Respuesta del agente:**
-> Sus datos personales son tratados conforme a la Ley 1581 de 2012 (Habeas Data).
-> Solo el personal médico y administrativo autorizado tiene acceso a su información.
-> Usted puede ejercer sus derechos de acceso, corrección o eliminación de datos
-> escribiendo a privacidad@clinicabienestar.com.
+> En la Clínica Bienestar Integral protegemos tus datos personales implementando diversas medidas de seguridad. Estas incluyen:
+>
+> - Cifrado SSL/TLS para la transmisión de datos.
+> - Control de acceso basado en roles (RBAC).
+> - Copias de seguridad diarias con almacenamiento cifrado.
+> - Capacitación continua del personal en el manejo de datos sensibles.
+> - Auditorías de seguridad semestrales.
+> - Política de escritorio limpio y pantalla limpia.
+> - Acuerdos de confidencialidad con todos los empleados.
 >
 > *Fuente: politica_privacidad_datos.pdf*
+> *Categoría: Privacidad y Datos)*
 
 ---
 
