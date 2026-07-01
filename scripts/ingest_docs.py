@@ -2,7 +2,14 @@
 """Indexa todos los documentos del directorio docs/ en ChromaDB."""
 from __future__ import annotations
 
+# --- PARCHE DE SQLITE3 PARA CHROMADB ---
 import sys
+try:
+    __import__('pysqlite3')
+    sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+except ImportError:
+    pass
+# ---------------------------------------
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
