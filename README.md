@@ -98,7 +98,7 @@ Streamlit  →  muestra la respuesta y los documentos consultados
 | Categoría | Tecnología | Versión | Uso en el proyecto |
 |---|---|---|---|
 | Lenguaje | Python | 3.11+ | Backend completo |
-| LLM | Google Gemini 2.0 Flash | gemini-2.0-flash | Generación de respuestas |
+| LLM | Google Gemini 2.5 Flash Lite | gemini-2.5-flash-lite | Generación de respuestas |
 | Embeddings | Gemini Embedding | gemini-embedding-001 | Vectorización de texto |
 | Vector store | ChromaDB | ≥ 0.5.0 | Almacenamiento y búsqueda semántica |
 | Interfaz | Streamlit | ≥ 1.38.0 | Chat web interactivo |
@@ -186,7 +186,7 @@ docker exec -it <container-id> python scripts/ingest_docs.py
 
 Agregar regla de entrada en la VCN: puerto `8501` TCP desde `0.0.0.0/0`.
 
-Acceder en: `http://<ip-publica>:8501`
+Acceder en: `http://localhost:8501`
 
 ---
 
@@ -269,11 +269,19 @@ Acceder en: `http://<ip-publica>:8501`
 
 ## Demo en OCI
 
-> **Agrega aquí una captura de pantalla o el enlace público de la aplicación corriendo en OCI.**
->
-> Ejemplo:
-> `![Demo en OCI](assets/demo_oci.png)`
-> `http://<ip-publica>:8501`
+URL App: http://148.116.104.135:8000
+
+Se realiza instalación y despliegue en OCI
+
+> ![Aplicativo Ejecutando en OCI](assets/InstalaciónOCI.jpg)
+
+Se accede a la app para consultas
+
+> ![Ingresar a APP](assets/AppEjecutando.jpg)
+
+Ejemplo de consulta API
+
+> ![Ingresar a APP](assets/AppFuncionando.jpg)
 
 ---
 
