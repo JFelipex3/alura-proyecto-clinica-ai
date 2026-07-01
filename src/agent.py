@@ -24,7 +24,7 @@ Reglas estrictas:
 
 
 class ClinicAgent:
-    def __init__(self, model_name: str = "gemini-2.0-flash") -> None:
+    def __init__(self, model_name: str = "gemini-2.5-flash-lite") -> None:
         api_key = os.getenv("GOOGLE_API_KEY")
         if not api_key:
             raise ValueError(
