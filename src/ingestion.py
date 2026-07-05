@@ -152,6 +152,23 @@ def chunk_text(text: str, chunk_size: int = 800, overlap: int = 120) -> List[str
     return chunks
 
 
+def load_and_chunk_single(file_path: str) -> List[Dict[str, Any]]:
+    """Carga y chuniza un único archivo con metadatos completos."""
+    doc = load_document(file_path)
+    text_chunks = chunk_text(doc["content"])
+    return [
+        {
+            "content": chunk,
+            "metadata": {
+                **doc["metadata"],
+                "chunk_index": i,
+                "total_chunks": len(text_chunks),
+            },
+        }
+        for i, chunk in enumerate(text_chunks)
+    ]
+
+
 def load_and_chunk_documents(docs_dir: str) -> List[Dict[str, Any]]:
     docs_path = Path(docs_dir)
     all_chunks: List[Dict[str, Any]] = []

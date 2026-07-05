@@ -19,6 +19,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from src.vectorstore import VectorStore
 from src.agent import ClinicAgent
+from src.ingestion import load_and_chunk_single, SUPPORTED_EXTENSIONS
 
 st.set_page_config(
     page_title="Asistente Clínica Bienestar Integral",
@@ -56,14 +57,6 @@ def render_sidebar(doc_count: int) -> int:
             st.code("python scripts/ingest_docs.py", language="bash")
         else:
             st.success(f"{doc_count} fragmentos indexados")
-            st.markdown("""
-- 📋 Política de privacidad de datos
-- ❓ Preguntas frecuentes sobre turnos
-- 📅 Política de cancelaciones
-- 🏥 Guía de convenios y coberturas
-- 💊 Instrucciones pre y post consulta
-- 📊 Tabla de convenios
-""")
 
         st.divider()
         n = st.slider("Fragmentos a recuperar", min_value=2, max_value=8, value=4)
@@ -77,6 +70,78 @@ def render_sidebar(doc_count: int) -> int:
             st.rerun()
 
     return n
+
+
+def _docs_dir() -> Path:
+    return Path(__file__).parent.parent / "docs"
+
+
+def render_doc_management(vectorstore: VectorStore) -> None:
+    st.subheader("Subir o actualizar documento")
+
+    allowed_types = [ext.lstrip(".") for ext in SUPPORTED_EXTENSIONS]
+    uploaded = st.file_uploader(
+        "Selecciona un archivo",
+        type=allowed_types,
+        help="Si el nombre coincide con un documento existente, se actualizará.",
+    )
+
+    if uploaded is not None:
+        dest = _docs_dir() / uploaded.name
+        already_exists = dest.exists()
+        label = "Actualizar documento" if already_exists else "Indexar documento"
+
+        if st.button(label, type="primary"):
+            dest.write_bytes(uploaded.getbuffer())
+            with st.spinner(f"Indexando «{uploaded.name}»… (puede tardar por límites de la API)"):
+                try:
+                    deleted = vectorstore.delete_document(uploaded.name)
+                    if deleted:
+                        st.info(f"Se eliminaron {deleted} fragmentos anteriores.")
+                    chunks = load_and_chunk_single(str(dest))
+                    vectorstore.add_documents(chunks)
+                    st.success(f"«{uploaded.name}» indexado correctamente ({len(chunks)} fragmentos).")
+                    st.rerun()
+                except Exception as exc:
+                    st.error(f"Error al indexar el documento: {exc}")
+
+    st.divider()
+    st.subheader("Documentos indexados")
+
+    docs = vectorstore.list_documents()
+    if not docs:
+        st.info("No hay documentos indexados aún.")
+        return
+
+    if "confirm_delete" not in st.session_state:
+        st.session_state.confirm_delete = None
+
+    for doc in sorted(docs, key=lambda d: d["source"]):
+        col_name, col_cat, col_chunks, col_btn = st.columns([3, 2, 1, 1])
+        col_name.markdown(f"**{doc['source']}**")
+        col_cat.caption(doc["category"])
+        col_chunks.caption(f"{doc['total_chunks']} frags.")
+
+        btn_key = f"del_{doc['source']}"
+        if col_btn.button("🗑️", key=btn_key, help="Eliminar documento"):
+            st.session_state.confirm_delete = doc["source"]
+
+    if st.session_state.confirm_delete:
+        source = st.session_state.confirm_delete
+        st.warning(f"¿Eliminar «{source}» del índice y del directorio docs/?")
+        c1, c2 = st.columns(2)
+        if c1.button("Confirmar eliminación", type="primary"):
+            with st.spinner(f"Eliminando «{source}»…"):
+                vectorstore.delete_document(source)
+                file_path = _docs_dir() / source
+                if file_path.exists():
+                    file_path.unlink()
+            st.session_state.confirm_delete = None
+            st.success(f"«{source}» eliminado.")
+            st.rerun()
+        if c2.button("Cancelar"):
+            st.session_state.confirm_delete = None
+            st.rerun()
 
 
 def render_chat(vectorstore: VectorStore, agent: ClinicAgent, n_results: int) -> None:
@@ -143,14 +208,19 @@ def main() -> None:
     doc_count = vectorstore.count()
     n_results = render_sidebar(doc_count)
 
-    if doc_count == 0:
-        st.warning(
-            "La base de conocimiento está vacía. "
-            "Ejecuta `python scripts/ingest_docs.py` para indexar los documentos."
-        )
-        return
+    tab_chat, tab_docs = st.tabs(["💬 Asistente", "📂 Documentos"])
 
-    render_chat(vectorstore, agent, n_results)
+    with tab_chat:
+        if doc_count == 0:
+            st.warning(
+                "La base de conocimiento está vacía. "
+                "Ve a la pestaña **📂 Documentos** para indexar archivos."
+            )
+        else:
+            render_chat(vectorstore, agent, n_results)
+
+    with tab_docs:
+        render_doc_management(vectorstore)
 
 
 if __name__ == "__main__":

@@ -114,6 +114,29 @@ class VectorStore:
             hits.append({"content": doc, "metadata": meta, "score": 1.0 - dist})
         return hits
 
+    def delete_document(self, source: str) -> int:
+        """Elimina todos los chunks de un documento por nombre de archivo."""
+        result = self._col.get(where={"source": source})
+        ids = result["ids"]
+        if ids:
+            self._col.delete(ids=ids)
+        return len(ids)
+
+    def list_documents(self) -> List[Dict[str, Any]]:
+        """Retorna los documentos únicos indexados con su metadata básica."""
+        result = self._col.get(include=["metadatas"])
+        seen: Dict[str, Dict[str, Any]] = {}
+        for meta in result["metadatas"]:
+            src = meta["source"]
+            if src not in seen:
+                seen[src] = {
+                    "source": src,
+                    "category": meta.get("category", "General"),
+                    "file_type": meta.get("file_type", ""),
+                    "total_chunks": meta.get("total_chunks", 0),
+                }
+        return list(seen.values())
+
     def count(self) -> int:
         return self._col.count()
 
