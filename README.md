@@ -15,7 +15,7 @@ más relevantes en los documentos de la clínica y luego genera la respuesta usa
 ese contexto. Esto garantiza que la información entregada sea siempre fiel a las
 políticas y procedimientos reales de la organización, sin inventar datos.
 
-Los documentos indexados cubren:
+Los documentos incluidos por defecto cubren:
 
 | Documento | Categoría |
 |---|---|
@@ -26,13 +26,15 @@ Los documentos indexados cubren:
 | Instrucciones pre y post consulta médica | Instrucciones Médicas |
 | Tabla de convenios EPS | Convenios y Coberturas |
 
+La base de conocimiento puede ampliarse o modificarse en cualquier momento desde la interfaz, sin necesidad de comandos ni reiniciar la aplicación (ver [Gestión de documentos desde la interfaz](#gestión-de-documentos-desde-la-interfaz)).
+
 ---
 
 ## Arquitectura de la solución
 
 El sistema opera en dos fases independientes:
 
-### Fase 1 — Ingesta de documentos (se ejecuta una sola vez)
+### Fase 1 — Ingesta de documentos
 
 ```
 docs/
@@ -48,6 +50,8 @@ docs/
                                         (almacenamiento persistente
                                           en chroma_db/)
 ```
+
+La ingesta inicial se realiza con `python scripts/ingest_docs.py`. Las operaciones posteriores (agregar, actualizar o eliminar documentos) se pueden hacer directamente desde la pestaña **📂 Documentos** de la interfaz web, sin necesidad de la línea de comandos.
 
 ### Fase 2 — Conversación en tiempo real
 
@@ -190,6 +194,43 @@ Acceder en: `http://localhost:8501`
 
 ---
 
+## Gestión de documentos desde la interfaz
+
+La aplicación incluye una pestaña **📂 Documentos** que permite administrar la base de conocimiento sin necesidad de usar la línea de comandos.
+
+### Agregar un documento nuevo
+
+1. Ir a la pestaña **📂 Documentos**.
+2. Seleccionar uno o más archivos con el selector (formatos soportados: PDF, DOCX, XLSX, PPTX, CSV, JSON, HTML, MD, TXT).
+3. El botón mostrará la cantidad de archivos nuevos a indexar.
+4. Al confirmar, cada archivo se guarda en `docs/` y se indexa automáticamente en ChromaDB.
+
+### Actualizar un documento existente
+
+El proceso es idéntico al de agregar: si el archivo subido tiene el mismo nombre que uno ya indexado, el sistema elimina los fragmentos anteriores del índice y los reemplaza con los del nuevo archivo. El botón indicará cuántos documentos serán actualizados.
+
+### Eliminar un documento
+
+En la sección **Documentos indexados** aparece la lista completa de archivos en el índice con su categoría y cantidad de fragmentos. Cada fila tiene un botón 🗑️ que solicita confirmación antes de:
+
+1. Eliminar todos los fragmentos del documento en ChromaDB.
+2. Eliminar el archivo físico de la carpeta `docs/`.
+
+### Formatos de archivo soportados
+
+| Extensión | Tipo |
+|---|---|
+| `.pdf` | PDF |
+| `.docx`, `.doc` | Word |
+| `.xlsx`, `.xls` | Excel |
+| `.pptx`, `.ppt` | PowerPoint |
+| `.csv` | Hoja de cálculo delimitada |
+| `.json` | JSON |
+| `.html`, `.htm` | HTML |
+| `.md`, `.txt` | Texto plano / Markdown |
+
+---
+
 ## Ejemplos de preguntas que el agente puede responder
 
 - ¿Con cuánta anticipación debo sacar un turno?
@@ -306,9 +347,9 @@ pamv-alura/
 │   └── politica_privacidad_datos.pdf
 ├── src/
 │   ├── ingestion.py        # Carga multi-formato + chunking
-│   ├── vectorstore.py      # ChromaDB + embeddings Gemini
+│   ├── vectorstore.py      # ChromaDB + embeddings Gemini (incluye list/delete por documento)
 │   ├── agent.py            # Integración con Gemini 2.0 Flash
-│   └── app.py              # Interfaz Streamlit
+│   └── app.py              # Interfaz Streamlit (chat + gestión de documentos)
 ├── scripts/
 │   └── ingest_docs.py      # CLI de indexación
 ├── Dockerfile
