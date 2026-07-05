@@ -79,12 +79,16 @@ def _docs_dir() -> Path:
 def render_doc_management(vectorstore: VectorStore) -> None:
     st.subheader("Subir o actualizar documentos")
 
+    if "uploader_key" not in st.session_state:
+        st.session_state.uploader_key = 0
+
     allowed_types = [ext.lstrip(".") for ext in SUPPORTED_EXTENSIONS]
     uploaded_files = st.file_uploader(
         "Selecciona uno o más archivos",
         type=allowed_types,
         accept_multiple_files=True,
         help="Si el nombre coincide con un documento existente, se actualizará.",
+        key=f"doc_uploader_{st.session_state.uploader_key}",
     )
 
     if uploaded_files:
@@ -112,6 +116,7 @@ def render_doc_management(vectorstore: VectorStore) -> None:
                         errors.append(uploaded.name)
                         st.error(f"Error al indexar «{uploaded.name}»: {exc}")
             if not errors:
+                st.session_state.uploader_key += 1
                 st.rerun()
 
     st.divider()
