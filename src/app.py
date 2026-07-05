@@ -8,6 +8,7 @@ try:
 except ImportError:
     pass
 # ---------------------------------------
+import os
 from pathlib import Path
 
 import streamlit as st
@@ -74,6 +75,33 @@ def render_sidebar(doc_count: int) -> int:
 
 def _docs_dir() -> Path:
     return Path(__file__).parent.parent / "docs"
+
+
+def render_doc_auth(vectorstore: VectorStore) -> None:
+    if "docs_authenticated" not in st.session_state:
+        st.session_state.docs_authenticated = False
+
+    if not st.session_state.docs_authenticated:
+        st.subheader("Acceso restringido")
+        username = st.text_input("Usuario")
+        password = st.text_input("Contraseña", type="password")
+        if st.button("Ingresar", type="primary"):
+            expected_user = os.getenv("DOCS_USER", "")
+            expected_pass = os.getenv("DOCS_PASSWORD", "")
+            if expected_user and expected_pass and username == expected_user and password == expected_pass:
+                st.session_state.docs_authenticated = True
+                st.rerun()
+            else:
+                st.error("Usuario o contraseña incorrectos.")
+        return
+
+    col_title, col_logout = st.columns([8, 1])
+    col_title.markdown("**Gestión de documentos**")
+    if col_logout.button("Cerrar sesión"):
+        st.session_state.docs_authenticated = False
+        st.rerun()
+
+    render_doc_management(vectorstore)
 
 
 def render_doc_management(vectorstore: VectorStore) -> None:
@@ -234,7 +262,7 @@ def main() -> None:
             render_chat(vectorstore, agent, n_results)
 
     with tab_docs:
-        render_doc_management(vectorstore)
+        render_doc_auth(vectorstore)
 
 
 if __name__ == "__main__":
