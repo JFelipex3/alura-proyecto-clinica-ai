@@ -77,33 +77,42 @@ def _docs_dir() -> Path:
 
 
 def render_doc_management(vectorstore: VectorStore) -> None:
-    st.subheader("Subir o actualizar documento")
+    st.subheader("Subir o actualizar documentos")
 
     allowed_types = [ext.lstrip(".") for ext in SUPPORTED_EXTENSIONS]
-    uploaded = st.file_uploader(
-        "Selecciona un archivo",
+    uploaded_files = st.file_uploader(
+        "Selecciona uno o más archivos",
         type=allowed_types,
+        accept_multiple_files=True,
         help="Si el nombre coincide con un documento existente, se actualizará.",
     )
 
-    if uploaded is not None:
-        dest = _docs_dir() / uploaded.name
-        already_exists = dest.exists()
-        label = "Actualizar documento" if already_exists else "Indexar documento"
+    if uploaded_files:
+        to_update = [f for f in uploaded_files if (_docs_dir() / f.name).exists()]
+        to_add = [f for f in uploaded_files if not (_docs_dir() / f.name).exists()]
+        parts = []
+        if to_add:
+            parts.append(f"{len(to_add)} nuevo(s)")
+        if to_update:
+            parts.append(f"{len(to_update)} a actualizar")
+        label = f"Indexar ({', '.join(parts)})"
 
         if st.button(label, type="primary"):
-            dest.write_bytes(uploaded.getbuffer())
-            with st.spinner(f"Indexando «{uploaded.name}»… (puede tardar por límites de la API)"):
-                try:
-                    deleted = vectorstore.delete_document(uploaded.name)
-                    if deleted:
-                        st.info(f"Se eliminaron {deleted} fragmentos anteriores.")
-                    chunks = load_and_chunk_single(str(dest))
-                    vectorstore.add_documents(chunks)
-                    st.success(f"«{uploaded.name}» indexado correctamente ({len(chunks)} fragmentos).")
-                    st.rerun()
-                except Exception as exc:
-                    st.error(f"Error al indexar el documento: {exc}")
+            errors = []
+            for uploaded in uploaded_files:
+                dest = _docs_dir() / uploaded.name
+                dest.write_bytes(uploaded.getbuffer())
+                with st.spinner(f"Indexando «{uploaded.name}»… (puede tardar por límites de la API)"):
+                    try:
+                        vectorstore.delete_document(uploaded.name)
+                        chunks = load_and_chunk_single(str(dest))
+                        vectorstore.add_documents(chunks)
+                        st.success(f"«{uploaded.name}» indexado ({len(chunks)} fragmentos).")
+                    except Exception as exc:
+                        errors.append(uploaded.name)
+                        st.error(f"Error al indexar «{uploaded.name}»: {exc}")
+            if not errors:
+                st.rerun()
 
     st.divider()
     st.subheader("Documentos indexados")
